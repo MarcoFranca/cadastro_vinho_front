@@ -16,7 +16,7 @@ export default function Home() {
             />
             <div className={styles.heroContent}>
               <h1>Software feito para organizar o seu estoque e as suas vendas de vinhos</h1>
-              <Link href={"/cadastro"} > Cadastre-se agora!</Link>
+              <Link href={"/register"} > Cadastre-se agora!</Link>
             </div>
           </div>
 
