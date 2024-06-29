@@ -3,7 +3,6 @@ import styles from "./page.module.css";
 import HeroImg from "../../public/assets/hero.png";
 import Link from "next/link";
 import ClientLayout from "@/app/client-layout";
-import AuthButton from "@/app/components/AuthButton";
 
 export default function Home() {
     return (
@@ -19,7 +18,6 @@ export default function Home() {
                     <div className={styles.heroContent}>
                         <h1>Software feito para organizar o seu estoque e as suas vendas de vinhos</h1>
                         <Link href={"/register"} > Cadastre-se agora!</Link>
-                        <AuthButton/>
                     </div>
                 </div>
 
