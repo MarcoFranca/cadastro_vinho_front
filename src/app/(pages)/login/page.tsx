@@ -1,45 +1,64 @@
+// src/app/login/page.tsx
 'use client';
 
-import { useState } from 'react';
-import {getSession, signIn} from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { signIn } from "next-auth/react";
+import React, { useState } from "react";
 
-export default function Login() {
+export default function LoginPage() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const router = useRouter();
+    const [error, setError] = useState('');
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const result = await signIn('credentials', {
-            redirect: false,
-            username,
-            password,
-        });
-        console.log(result)
+    const handleSubmit = async (event: React.FormEvent) => {
+        event.preventDefault();
 
-        if (result?.ok) {
-            const session = await getSession();
-            if (session?.accessToken) {
-                localStorage.setItem('token', session.accessToken);
-                router.push('/');
+        try {
+            const result = await signIn("credentials", {
+                redirect: false,
+                username,
+                password,
+            });
+
+            if (result?.error) {
+                setError(result.error);
+            } else {
+                // Redireciona para a página inicial ou protegida após o login bem-sucedido
+                window.location.href = "/";
             }
-        } else {
-            alert('Login failed');
+        } catch (error) {
+            console.error("Login error:", error.response?.data || error.message);
+            setError("Failed to login");
         }
     };
 
+    const handleGoogleSignIn = () => {
+        signIn("google");
+    };
+
     return (
-        <form onSubmit={handleSubmit}>
-            <label>
-                Username:
-                <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
-            </label>
-            <label>
-                Password:
-                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-            </label>
-            <button type="submit">Login</button>
-        </form>
+        <div>
+            <h1>Login</h1>
+            <form onSubmit={handleSubmit}>
+                <label>
+                    Username:
+                    <input
+                        type="text"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                    />
+                </label>
+                <label>
+                    Password:
+                    <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                </label>
+                <button type="submit">Login with Credentials</button>
+            </form>
+            {error && <p>{error}</p>}
+            <button onClick={handleGoogleSignIn}>Login with Google</button>
+        </div>
     );
 }
