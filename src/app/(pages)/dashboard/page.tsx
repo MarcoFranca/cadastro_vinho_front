@@ -4,6 +4,8 @@
 import { useSession, signIn } from 'next-auth/react';
 import { useEffect } from 'react';
 import ClientLayout from '@/app/client-layout';
+import AsideHeader from "@/app/components/header/aside/AsideHeader";
+import CadastrarVinhos from "@/app/components/dashboard/cadastrar-vinhos";
 
 export default function DashboardPage() {
     const { data: session, status } = useSession();
@@ -24,8 +26,9 @@ export default function DashboardPage() {
 
     return (
         <ClientLayout>
+            <AsideHeader />
             <h1>Welcome to the Dashboard</h1>
-            {/* Outros componentes */}
+             <CadastrarVinhos/>
         </ClientLayout>
     );
 }

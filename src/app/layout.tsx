@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import React from "react";
 import ClientLayout from "@/app/client-layout";
+import ClientProvider from "@/app/components/ClientProvider";
 
 
 export const metadata: Metadata = {
@@ -21,10 +22,12 @@ export default function RootLayout({
     return (
         <html lang="pt-br">
         <body >
-        <ClientLayout>
+        <ClientProvider>
+            <ClientLayout>
 
-            {children}
-        </ClientLayout>
+                {children}
+            </ClientLayout>
+        </ClientProvider>
         </body>
         </html>
     );

@@ -1,0 +1,16 @@
+/* src/app/components/UploadExcel.module.css */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+}
+
+.container input {
+    margin-bottom: 10px;
+}
+
+.container p {
+    margin-top: 10px;
+    color: green;
+}

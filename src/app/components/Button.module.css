@@ -1,0 +1,15 @@
+/* src/app/components/Button.module.css */
+.button {
+    background-color: #951f56;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: 0.4s;
+}
+
+.button:hover {
+    background-color: rgba(149, 31, 86, 0.78);
+}

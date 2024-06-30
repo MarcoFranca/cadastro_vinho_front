@@ -1,0 +1,62 @@
+/*navegation bar styles start */
+.container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    background-color: rgb(168, 79, 99);
+}
+.navbar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    max-width: 1440px;
+    width: 100%;
+    justify-content: space-between;
+    padding: 32px;
+    height: 130px;
+}
+
+.logo{
+    width: 250px;
+    height: auto;
+    object-fit: contain;
+}
+
+.menu{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    list-style:none;
+    font-size: 22px;
+}
+.iconeMenu{
+    width: auto;
+    height: 30px;
+    object-fit: contain;
+}
+
+.lista{
+    display: flex;
+    gap: 28PX;
+    width: 180px;
+
+}
+
+.lista>a{
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-weight: 600;
+    transition: 0.6s;
+}
+
+.lista>a:hover{
+    color: rgb(255, 226, 125);
+    text-decoration: underline;
+    transform: scale(1.06);
+}
+
+/* navegation bar styles end*/
+
