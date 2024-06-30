@@ -10,7 +10,7 @@ interface CustomToken extends JWT {
     username?: string;
 }
 
-export default NextAuth({
+const authOptions = {
     providers: [
         CredentialsProvider({
             name: 'Credentials',
@@ -57,4 +57,8 @@ export default NextAuth({
         },
     },
     secret: process.env.NEXTAUTH_SECRET,
-});
+};
+
+// Exportação correta para App Router do Next.js
+export const GET = NextAuth(authOptions);
+export const POST = NextAuth(authOptions);
