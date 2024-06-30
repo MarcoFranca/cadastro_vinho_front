@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Vinho, Fornecedor } from '@/types/apiResponses';
+import { Vinho, Fornecedor } from '@/app/types/apiResponses';
 
 interface VinhoState {
     vinhos: Vinho[];
