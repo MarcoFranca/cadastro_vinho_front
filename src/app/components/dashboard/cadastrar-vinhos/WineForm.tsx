@@ -2,7 +2,7 @@
 
 import React from 'react';
 import styles from './cadastrar-vinhos.module.css';
-import { WineFormProps } from '@/types/apiResponses';
+import { WineFormProps } from '@/app/types/apiResponses';
 
 
 const WineForm: React.FC<WineFormProps> = ({

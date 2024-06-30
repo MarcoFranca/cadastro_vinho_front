@@ -2,7 +2,7 @@
 
 import React from 'react';
 import styles from './cadastrar-vinhos.module.css';
-import { Vinho } from '@/types/apiResponses';
+import { Vinho } from '@/app/types/apiResponses';
 
 interface WineListProps {
     vinhos: Vinho[];
