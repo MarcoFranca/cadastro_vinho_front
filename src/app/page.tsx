@@ -23,7 +23,6 @@ export default function Home() {
                         <Link href={"/register"} > Cadastre-se agora!</Link>
                     </div>
                 </div>
-
             </main>
         </ClientLayout>
     );
