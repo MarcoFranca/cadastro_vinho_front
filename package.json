@@ -2,6 +2,7 @@
   "name": "vino_manager",
   "version": "0.1.0",
   "private": true,
+  "license": "Proprietary",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -9,29 +10,33 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@babel/core": "^7.24.7",
     "@reduxjs/toolkit": "^2.2.5",
+    "axios": "^1.7.2",
     "file-saver": "^2.0.5",
     "framer-motion": "^11.2.11",
-    "react-loading": "^2.0.3",
-    "react-modal": "^3.16.1",
-    "react-redux": "^9.1.2",
-    "axios": "^1.7.2",
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
     "next": "14.2.3",
     "next-auth": "^4.24.7",
+    "prop-types": "^15.8.1",
     "react": "^18",
     "react-dom": "^18",
+    "react-loading": "^2.0.3",
+    "react-modal": "^3.16.1",
+    "react-redux": "^9.1.2",
     "styled-components": "^6.1.11"
   },
   "devDependencies": {
     "@types/file-saver": "^2.0.7",
-    "@types/react-modal": "^3.16.3",
-    "babel-plugin-styled-components": "^2.1.4",
     "@types/jsonwebtoken": "^9.0.6",
+    "@types/next-auth": "^3.15.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/react-modal": "^3.16.3",
+    "@types/redux": "^3.6.31",
+    "babel-plugin-styled-components": "^2.1.4",
     "typescript": "^5"
   }
 }

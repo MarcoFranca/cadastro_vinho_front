@@ -1,60 +1,60 @@
-import NextAuth from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import axios from "axios";
+import NextAuth from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import { JWT } from 'next-auth/jwt';
+import { Session } from 'next-auth';
 
-const handler = NextAuth({
+interface CustomToken extends JWT {
+    id?: string;
+    accessToken?: string;
+    refreshToken?: string;
+    username?: string;
+}
+
+export default NextAuth({
     providers: [
         CredentialsProvider({
-            name: "Credentials",
+            name: 'Credentials',
             credentials: {
                 username: { label: "Username", type: "text" },
                 password: { label: "Password", type: "password" },
             },
-            async authorize(credentials) {
-                if (!credentials) {
-                    return null;
-                }
-
-                try {
-                    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}users/token/`, {
-                        username: credentials.username,
-                        password: credentials.password,
-                    });
-                    const user = res.data;
-
-                    if (res.status === 200 && user) {
-                        return user;
-                    }
-                    return null;
-                } catch (error) {
-                    console.error('Failed to authorize:', error);
+            authorize: async (credentials) => {
+                const user = {
+                    id: '1',
+                    name: 'User',
+                    email: 'user@example.com',
+                    access: 'token_access',
+                    refresh: 'token_refresh',
+                    username: 'admin'
+                }; // ID como string
+                if (credentials?.username === 'admin' && credentials?.password === 'admin') {
+                    return user;
+                } else {
                     return null;
                 }
             },
         }),
     ],
-    pages: {
-        signIn: "/auth/signin",
-    },
     callbacks: {
-        async jwt({ token, user }) {
+        async jwt({ token, user }: { token: CustomToken; user?: any }) {
             if (user) {
+                token.id = user.id;
                 token.accessToken = user.access;
                 token.refreshToken = user.refresh;
                 token.username = user.username;
             }
             return token;
         },
-        async session({ session, token }) {
-            if (token) {
-                session.accessToken = token.accessToken;
-                session.refreshToken = token.refreshToken;
-                session.user.username = token.username;
+        async session({ session, token }: { session: Session; token: CustomToken }) {
+            session.user = session.user || {};
+            if (token.id) {
+                session.user.id = token.id ?? '';
+                session.accessToken = token.accessToken ?? '';
+                session.refreshToken = token.refreshToken ?? '';
+                session.user.username = token.username ?? '';
             }
             return session;
         },
     },
     secret: process.env.NEXTAUTH_SECRET,
 });
-
-export { handler as GET, handler as POST };

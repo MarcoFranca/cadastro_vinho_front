@@ -22,12 +22,11 @@ export default function RootLayout({
     return (
         <html lang="pt-br">
         <body >
-        <ClientProvider>
-            <ClientLayout>
-
+        <ClientLayout>
+            <ClientProvider>
                 {children}
-            </ClientLayout>
-        </ClientProvider>
+            </ClientProvider>
+        </ClientLayout>
         </body>
         </html>
     );
