@@ -1,19 +1,16 @@
 'use client';
 
-import React, {useState} from "react";
-import {signIn} from "next-auth/react";
-import styles from './login.module.css'
+import React, { useState } from "react";
+import { signIn } from "next-auth/react";
+import styles from './login.module.css';
 import Image from "next/image";
 import LogoImage from "@/../public/assets/logos/vertical_logo_transparente(letra).png";
 import Link from "next/link";
 
-
 export default function LoginForm(props: any) {
-
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -29,21 +26,17 @@ export default function LoginForm(props: any) {
                 setError(result.error);
             } else {
                 // Redireciona para a página inicial ou protegida após o login bem-sucedido
-                window.location.href = "/";
+                window.location.href = "/dashboard";
             }
         } catch (error) {
             setError("Failed to login");
         }
     };
 
-    // const handleGoogleSignIn = () => {
-    //     signIn("google");
-    // };
-
     return (
         <div className={styles.container_form}>
             <form onSubmit={handleSubmit} className={styles.form}>
-                <Image src={LogoImage} alt={'logo'} className={styles.image}/>
+                <Image src={LogoImage} alt={'logo'} className={styles.image} />
                 <input
                     type="text"
                     value={username}
@@ -68,7 +61,6 @@ export default function LoginForm(props: any) {
                 <p>Não tem conta?<Link href={'/register'}> Cadastre-se</Link></p>
             </div>
             {error && <p>{error}</p>}
-            {/*<button onClick={handleGoogleSignIn}>Login with Google</button>*/}
         </div>
     );
 }

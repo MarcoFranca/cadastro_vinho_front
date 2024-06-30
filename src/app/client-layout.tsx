@@ -4,11 +4,11 @@
 import { SessionProvider } from "next-auth/react";
 import { ReactNode } from 'react';
 
-export default function ClientLayout({
-                                         children,
-                                     }: {
+interface ClientLayoutProps {
     children: ReactNode;
-}) {
+}
+
+export default function ClientLayout({ children }: ClientLayoutProps) {
     return (
         <SessionProvider>
             {children}
