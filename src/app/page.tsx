@@ -3,11 +3,14 @@ import styles from "./page.module.css";
 import HeroImg from "../../public/assets/hero.png";
 import Link from "next/link";
 import ClientLayout from "@/app/client-layout";
+import {Header} from "@/app/components/header";
+import React from "react";
 
 export default function Home() {
     return (
         <ClientLayout>
             <main className={styles.main}>
+                <Header />
                 <div className={styles.hero}>
                     <Image
                         className={styles.heroImg}
