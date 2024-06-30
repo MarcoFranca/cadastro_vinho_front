@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import axiosInstance from '@/utils/axiosConfig';
+import axiosInstance from '@/app/api/axios';
 import { login } from '@/store/slices/authSlice';
 import { useDispatch } from 'react-redux';
 import { logout as logoutAction } from '@/store/slices/authSlice';
