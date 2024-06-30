@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/store/store';
@@ -98,7 +96,7 @@ const CadastrarVinhos: React.FC = () => {
     );
 
     // Organize vinhos por fornecedores
-    const vinhosPorFornecedor = fornecedores.reduce((acc: any, fornecedor: Fornecedor) => {
+    const vinhosPorFornecedor = fornecedores.reduce((acc: { fornecedor: Fornecedor, vinhos: Vinho[] }[], fornecedor: Fornecedor) => {
         const vinhosFornecedor = filteredVinhos.filter((vinho) =>
             vinho.fornecedores.includes(fornecedor.id)
         );
@@ -147,11 +145,11 @@ const CadastrarVinhos: React.FC = () => {
             <div className="printableArea">
                 {groupByFornecedor ? (
                     <div className={styles.vinhosList}>
-                        {vinhosPorFornecedor.map((group: any) => (
+                        {vinhosPorFornecedor.map((group) => (
                             <div key={group.fornecedor.id} className={styles.fornecedorGroup}>
                                 <h3>{group.fornecedor.nome}</h3>
                                 <ul className={styles.card}>
-                                    {group.vinhos.map((vinho: Vinho) => (
+                                    {group.vinhos.map((vinho) => (
                                         <li key={vinho.id} className={styles.cell}>
                                             <img src={vinho.imagem} alt={vinho.nome} />
                                             <p>Vinho: {vinho.nome}</p>

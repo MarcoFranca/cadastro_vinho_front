@@ -38,7 +38,7 @@ export interface Vinho {
     markup: number;
     estoque: number;
     imagem: string;
-    fornecedores: Fornecedor[];
+    fornecedores: string[]; // Assumindo que isso é um array de IDs de fornecedores
     // Adicione outros campos relevantes aqui
 }
 
