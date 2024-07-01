@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 import styles from './register.module.css';
 import Link from "next/link";
 import LogoImage from "@/../public/assets/logos/vertical_logo_transparente(letra).png";
 import Image from "next/image";
+import axiosInstance from '@/app/api/axios';
 
 export default function RegisterForm(props: any) {
     const [username, setUsername] = useState('');
@@ -17,7 +17,7 @@ export default function RegisterForm(props: any) {
         e.preventDefault();
         setError('');  // Limpa o erro antes de tentar registrar
         try {
-            const response = await axios.post(`http://localhost:8000/api/v1/users/users/`, {
+            const response = await axiosInstance.post(`users/users/`, {
                 username,
                 email,
                 password,
