@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import ClientLayout from '@/app/client-layout';
 import AsideHeader from "@/app/components/header/aside/AsideHeader";
 import CadastrarVinhos from "@/app/components/dashboard/cadastrar-vinhos";
+import styles from './dashboard.module.css'
 
 export default function DashboardPage() {
     const { data: session, status } = useSession();
@@ -26,9 +27,10 @@ export default function DashboardPage() {
 
     return (
         <ClientLayout>
-            <AsideHeader/>
-            <h1>Welcome to the Dashboard</h1>
-             <CadastrarVinhos/>
+            <main className={styles.main}>
+                <AsideHeader/>
+                <CadastrarVinhos/>
+            </main>
         </ClientLayout>
     );
 }

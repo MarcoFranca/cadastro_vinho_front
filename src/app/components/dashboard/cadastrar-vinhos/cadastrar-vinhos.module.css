@@ -1,14 +1,17 @@
 .container {
-    padding: 20px;
     background-color: #fafafa;
-    width: 100%;
+    width: calc(100% - 250px);
     height: 100%;
 }
 
 .header{
     display: flex;
+    flex-direction: row;
     align-items: center;
+    height: 100px;
+    width: 100%;
     gap: 16px;
+    /*background-color: #0c0b0b;*/
 }
 
 .filtro {
@@ -19,6 +22,8 @@
     border-radius: 5px;
 }
 
+
+
 .card{
     display: flex;
     width: 100%;
@@ -27,13 +32,13 @@
     border: 1px solid #cccccc;
     -webkit-box-shadow: 8px 6px 21px 1px rgba(18,18,18,1);
     -moz-box-shadow: 8px 6px 21px 1px rgba(18,18,18,1);
-    box-shadow: 8px 6px 21px 1px rgba(18,18,18,1);    border-radius: 16px;
+    box-shadow: 8px 6px 21px 1px rgba(18,18,18,1);
+    border-radius: 16px;
     list-style: none;
 }
 
-.container button {
+.header > button {
     display: flex;
-    align-self: flex-start;
     align-items: center;
     justify-content: center;
     border: 1px solid #cccccc;
@@ -41,10 +46,10 @@
     padding: 10px;
     cursor: pointer;
     transition: background-color 0.3s;
-    font-size: 16px;
-    font-weight: bold;
+    font-size: 12px;
+    font-weight: 500;
     margin-bottom: 16px;
-    width: 200px;
+    width: 250px;
 }
 
 .container button:hover {

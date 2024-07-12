@@ -56,7 +56,7 @@ const CadastrarVinhos: React.FC = () => {
         });
 
         try {
-            const response = await axiosInstance.post('/wines/wines/', formData, {
+            const response = await axiosInstance.post('wines/wines/', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -113,7 +113,7 @@ const CadastrarVinhos: React.FC = () => {
     const handleDownloadCSV = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            const response = await axiosInstance.post('/wines/export/', {
+            const response = await axiosInstance.post('wines/export/', {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -126,7 +126,7 @@ const CadastrarVinhos: React.FC = () => {
 
     return (
         <div className={styles.container}>
-            <div className={`${styles.header} hide-on-print`}>
+            <div className={`${styles.header}`}>
                 <button onClick={() => setIsModalOpen(true)}>+ Cadastrar Vinho</button>
                 <input
                     type="text"

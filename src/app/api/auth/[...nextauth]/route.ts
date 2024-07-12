@@ -1,64 +1,94 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { JWT } from 'next-auth/jwt';
-import { Session } from 'next-auth';
-
-interface CustomToken extends JWT {
-    id?: string;
-    accessToken?: string;
-    refreshToken?: string;
-    username?: string;
-}
+import axiosInstance from '@/app/api/axios';
+import store from "@/store/store";
 
 const authOptions = {
     providers: [
         CredentialsProvider({
             name: 'Credentials',
             credentials: {
-                username: { label: "Username", type: "text" },
-                password: { label: "Password", type: "password" },
+                username: { label: 'Username', type: 'text' },
+                password: { label: 'Password', type: 'password' }
             },
-            authorize: async (credentials) => {
-                const user = {
-                    id: '1',
-                    name: 'User',
-                    email: 'user@example.com',
-                    access: 'token_access',
-                    refresh: 'token_refresh',
-                    username: 'admin'
-                }; // ID como string
-                if (credentials?.username === 'admin' && credentials?.password === 'admin') {
-                    return user;
-                } else {
+            authorize: async (credentials, req) => {
+                if (!credentials) return null;
+
+                try {
+                    // Autenticação inicial para obter os tokens
+                    const tokenResponse = await axiosInstance.post(`users/token/`, {
+                        username: credentials.username,
+                        password: credentials.password,
+                    });
+
+                    if (tokenResponse.status === 200) {
+                        const { access, refresh } = tokenResponse.data;
+
+                        // Atualiza o estado do Redux com o token de acesso
+                        // Para que o interceptor do axiosInstance inclua o token
+                        store.dispatch({
+                            type: 'auth/setToken',
+                            payload: { access, refresh },
+                        });
+
+                        // Fazer uma chamada adicional ao endpoint users/profile para obter os detalhes do usuário
+                        const profileResponse = await axiosInstance.get(`users/profile`, {
+                            headers: {
+                                Authorization: `Bearer ${access}`,
+                            },
+                        });
+
+                        if (profileResponse.status === 200) {
+                            const user = profileResponse.data;
+
+                            return {
+                                id: user.id,
+                                name: user.username, // Ajuste conforme necessário
+                                email: user.email,
+                                username: user.username,
+                                accessToken: access,
+                                refreshToken: refresh,
+                            };
+                        } else {
+                            return null;
+                        }
+                    } else {
+                        return null;
+                    }
+                } catch (error) {
+                    console.error('Error authenticating user:', error);
                     return null;
                 }
-            },
-        }),
+            }
+        })
     ],
     callbacks: {
-        async jwt({ token, user }: { token: CustomToken; user?: any }) {
+        async jwt({ token, user } : {token: any, user:any}) {
             if (user) {
                 token.id = user.id;
-                token.accessToken = user.access;
-                token.refreshToken = user.refresh;
+                token.accessToken = user.accessToken;
+                token.refreshToken = user.refreshToken;
                 token.username = user.username;
             }
             return token;
         },
-        async session({ session, token }: { session: Session; token: CustomToken }) {
-            session.user = session.user || {};
-            if (token.id) {
-                session.user.id = token.id ?? '';
-                session.accessToken = token.accessToken ?? '';
-                session.refreshToken = token.refreshToken ?? '';
-                session.user.username = token.username ?? '';
-            }
+        async session({ session, token } : {session: any, token: any}) {
+            session.user = {
+                id: token.id,
+                name: token.name || token.username,
+                email: token.email || '',
+                username: token.username,
+                accessToken: token.accessToken,
+                refreshToken: token.refreshToken,
+            };
             return session;
-        },
+        }
     },
     secret: process.env.NEXTAUTH_SECRET,
+    pages: {
+        signIn: '/auth/signin',
+    },
 };
 
-// Exportação correta para App Router do Next.js
 export const GET = NextAuth(authOptions);
 export const POST = NextAuth(authOptions);

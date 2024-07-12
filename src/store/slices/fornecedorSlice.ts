@@ -24,12 +24,12 @@ const initialState: FornecedorState = {
 };
 
 export const fetchFornecedores = createAsyncThunk('fornecedores/fetchFornecedores', async () => {
-    const response = await axiosInstance.get('/suppliers/suppliers/');
+    const response = await axiosInstance.get('suppliers/suppliers/');
     return response.data;
 });
 
 export const createFornecedor = createAsyncThunk('fornecedores/createFornecedor', async (novoFornecedor: Fornecedor) => {
-    const response = await axiosInstance.post('/suppliers/suppliers/', novoFornecedor, {
+    const response = await axiosInstance.post('suppliers/suppliers/', novoFornecedor, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         },

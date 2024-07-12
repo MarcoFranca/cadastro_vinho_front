@@ -4,7 +4,7 @@ import fornecedorReducer from './slices/fornecedorSlice';
 import vinhoReducer from '@/store/slices/vinhoSlice';
 
 
-const store = configureStore({
+export const store = configureStore({
     reducer: {
         auth: authReducer,
         fornecedores: fornecedorReducer,
