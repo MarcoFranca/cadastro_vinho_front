@@ -14,7 +14,6 @@ const authOptions = {
                 if (!credentials) return null;
 
                 try {
-                    // Use a URL completa para a API
                     const tokenResponse = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}users/token/`, {
                         username: credentials.username,
                         password: credentials.password,
