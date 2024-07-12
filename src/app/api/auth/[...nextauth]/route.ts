@@ -1,7 +1,6 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import axiosInstance from '@/app/api/axios';
-import store from "@/store/store";
+import axios from 'axios';
 
 const authOptions = {
     providers: [
@@ -11,12 +10,12 @@ const authOptions = {
                 username: { label: 'Username', type: 'text' },
                 password: { label: 'Password', type: 'password' }
             },
-            authorize: async (credentials, req) => {
+            authorize: async (credentials) => {
                 if (!credentials) return null;
 
                 try {
-                    // Autenticação inicial para obter os tokens
-                    const tokenResponse = await axiosInstance.post(`users/token/`, {
+                    // Use a URL completa para a API
+                    const tokenResponse = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}users/token/`, {
                         username: credentials.username,
                         password: credentials.password,
                     });
@@ -24,15 +23,7 @@ const authOptions = {
                     if (tokenResponse.status === 200) {
                         const { access, refresh } = tokenResponse.data;
 
-                        // Atualiza o estado do Redux com o token de acesso
-                        // Para que o interceptor do axiosInstance inclua o token
-                        store.dispatch({
-                            type: 'auth/setToken',
-                            payload: { access, refresh },
-                        });
-
-                        // Fazer uma chamada adicional ao endpoint users/profile para obter os detalhes do usuário
-                        const profileResponse = await axiosInstance.get(`users/profile`, {
+                        const profileResponse = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}users/profile`, {
                             headers: {
                                 Authorization: `Bearer ${access}`,
                             },
@@ -43,7 +34,7 @@ const authOptions = {
 
                             return {
                                 id: user.id,
-                                name: user.username, // Ajuste conforme necessário
+                                name: user.username,
                                 email: user.email,
                                 username: user.username,
                                 accessToken: access,

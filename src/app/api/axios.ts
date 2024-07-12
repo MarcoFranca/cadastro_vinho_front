@@ -25,5 +25,4 @@ if (typeof window !== 'undefined') {
 }
 
 // Exportação da instância do Axios
-// @ts-ignore
 export default axiosInstance;
