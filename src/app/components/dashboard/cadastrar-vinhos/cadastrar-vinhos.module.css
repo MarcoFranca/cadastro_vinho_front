@@ -5,13 +5,80 @@
     padding: 32px;
 }
 
-.header{
+.header {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     width: 100%;
     gap: 16px;
+}
+
+.filtro {
+    padding: 10px;
+    margin-bottom: 20px;
+    width: calc(100% - 250px);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.header > button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #cccccc;
+    border-radius: 14px;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 16px;
+    width: 250px;
+}
+
+.container button:hover {
+    background-color: #e3c563;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th, .table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.table th {
+    background-color: #f4f4f4;
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.image {
+    width: 80px;
+    height: auto;
+}
+
+.actionButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.actionButton img {
+    width: 20px;
+    height: 20px;
+}
+
+.printableArea {
+    margin-top: 20px;
 }
 
 .filtro {

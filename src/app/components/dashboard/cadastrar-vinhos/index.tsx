@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '@/store/store';
-import { fetchVinhos, fetchFornecedores } from '@/store/slices/vinhoThunks';
+import { fetchVinhos, fetchFornecedores, updateVinho, deleteVinho } from '@/store/slices/vinhoThunks';
 import styles from './cadastrar-vinhos.module.css';
 import Modal from '@/app/components/Modal/Modal';
 import WineForm from './WineForm';
@@ -9,6 +9,9 @@ import axiosInstance from '@/app/api/axios';
 import { Vinho, Fornecedor } from '@/app/types/apiResponses';
 import DownloadExcel from '@/app/components/dashboard/cadastrar-vinhos/DownloadExel';
 import UploadExcel from "@/app/components/dashboard/cadastrar-vinhos/UploadExcel";
+import Image from 'next/image';
+import EditImage from '../../../../../public/assets/icones/edit.svg';
+import DeleteImage from '../../../../../public/assets/icones/delete.svg';
 
 const CadastrarVinhos: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -28,7 +31,8 @@ const CadastrarVinhos: React.FC = () => {
     const [imagem, setImagem] = useState<File | null>(null);
     const [mensagem, setMensagem] = useState('');
     const [filtro, setFiltro] = useState('');
-    const [groupByFornecedor, setGroupByFornecedor] = useState(false);
+    const [currentVinhoId, setCurrentVinhoId] = useState<string | null>(null);
+    const [isEditMode, setIsEditMode] = useState(false);
 
     useEffect(() => {
         dispatch(fetchVinhos());
@@ -50,31 +54,29 @@ const CadastrarVinhos: React.FC = () => {
         if (imagem) {
             formData.append('imagem', imagem);
         }
-
         fornecedoresSelecionados.forEach(fornecedorId => {
             formData.append('fornecedores', fornecedorId);
         });
 
         try {
-            const response = await axiosInstance.post('wines/wines/', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-            dispatch({ type: 'vinhos/setMensagem', payload: 'Vinho cadastrado com sucesso!' });
+            if (isEditMode && currentVinhoId) {
+                await axiosInstance.put(`wines/wines/${currentVinhoId}/`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+                dispatch(updateVinho({ id: currentVinhoId, ...formData }));
+            } else {
+                const response = await axiosInstance.post('wines/wines/', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+                dispatch({ type: 'vinhos/setVinhos', payload: [...vinhos, response.data] });
+            }
             setIsModalOpen(false);
-            setNome('');
-            setVinicula('');
-            setPais('');
-            setUva('');
-            setSafra('');
-            setTamanho('inteira');
-            setValorCusto('');
-            setMarkup('');
-            setEstoque('');
-            setImagem(null);
-            setFornecedoresSelecionados([]);
-            dispatch({ type: 'vinhos/setVinhos', payload: [...vinhos, response.data] });
+            resetForm();
+            dispatch(fetchVinhos());
         } catch (error) {
             dispatch({ type: 'vinhos/setMensagem', payload: 'Erro ao cadastrar vinho.' });
         }
@@ -91,37 +93,40 @@ const CadastrarVinhos: React.FC = () => {
         setFornecedoresSelecionados(options.map(option => option.value));
     };
 
-    const filteredVinhos = vinhos.filter((vinho) =>
-        vinho.nome.toLowerCase().includes(filtro.toLowerCase())
-    );
-
-    // Organize vinhos por fornecedores
-    const vinhosPorFornecedor = fornecedores.reduce((acc: { fornecedor: Fornecedor, vinhos: Vinho[] }[], fornecedor: Fornecedor) => {
-        const vinhosFornecedor = filteredVinhos.filter((vinho) =>
-            vinho.fornecedores.includes(fornecedor.id)
-        );
-        if (vinhosFornecedor.length) {
-            acc.push({ fornecedor, vinhos: vinhosFornecedor });
-        }
-        return acc;
-    }, []);
-
-    const handlePrint = () => {
-        window.print();
+    const handleEdit = (vinho: Vinho) => {
+        setNome(vinho.nome);
+        setVinicula(vinho.vinicula);
+        setPais(vinho.pais);
+        setUva(vinho.uva);
+        setSafra(vinho.safra);
+        setTamanho(vinho.tamanho);
+        setValorCusto(vinho.valor_custo.toString());
+        setMarkup(vinho.markup.toString());
+        setEstoque(vinho.estoque.toString());
+        setFornecedoresSelecionados(vinho.fornecedores);
+        setCurrentVinhoId(vinho.id);
+        setIsEditMode(true);
+        setIsModalOpen(true);
     };
 
-    const handleDownloadCSV = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        try {
-            const response = await axiosInstance.post('wines/export/', {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
+    const handleDelete = (id: string) => {
+        dispatch(deleteVinho(id));
+    };
 
-        } catch (error) {
-            dispatch({ type: 'vinhos/setMensagem', payload: 'Erro ao cadastrar vinho.' });
-        }
+    const resetForm = () => {
+        setNome('');
+        setVinicula('');
+        setPais('');
+        setUva('');
+        setSafra('');
+        setTamanho('inteira');
+        setValorCusto('');
+        setMarkup('');
+        setEstoque('');
+        setImagem(null);
+        setFornecedoresSelecionados([]);
+        setCurrentVinhoId(null);
+        setIsEditMode(false);
     };
 
     return (
@@ -135,50 +140,45 @@ const CadastrarVinhos: React.FC = () => {
                     onChange={(e) => setFiltro(e.target.value)}
                     className={styles.filtro}
                 />
-                <button onClick={() => setGroupByFornecedor(!groupByFornecedor)}>
-                    {groupByFornecedor ? 'Ver Todos' : 'Agrupar por Fornecedor'}
-                </button>
-                <button onClick={handlePrint}>Imprimir</button>
-                <DownloadExcel/>
-                <UploadExcel/>
+                <DownloadExcel />
+                <UploadExcel />
             </div>
             <div className="printableArea">
-                {groupByFornecedor ? (
-                    <div className={styles.vinhosList}>
-                        {vinhosPorFornecedor.map((group) => (
-                            <div key={group.fornecedor.id} className={styles.fornecedorGroup}>
-                                <h3>{group.fornecedor.nome}</h3>
-                                <ul className={styles.card}>
-                                    {group.vinhos.map((vinho) => (
-                                        <li key={vinho.id} className={styles.cell}>
-                                            <img src={vinho.imagem} alt={vinho.nome} />
-                                            <p>Vinho: {vinho.nome}</p>
-                                            <p>Safra: {vinho.safra}</p>
-                                            <p>Vinicula: {vinho.vinicula}</p>
-                                            <p>Uva: {vinho.uva}</p>
-                                            <p>Valor: {vinho.valorCusto}</p>
-                                            <p>Pais: {vinho.pais}</p>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        ))}
-                    </div>
-                ) : (
-                    <ul className={styles.card}>
-                        {filteredVinhos.map((vinho) => (
-                            <li key={vinho.id} className={styles.cell}>
-                                <img src={vinho.imagem} alt={vinho.nome} />
-                                <p>Vinho: {vinho.nome}</p>
-                                <p>Safra: {vinho.safra}</p>
-                                <p>Vinicula: {vinho.vinicula}</p>
-                                <p>Uva: {vinho.uva}</p>
-                                <p>Valor: {vinho.valorCusto}</p>
-                                <p>Pais: {vinho.pais}</p>
-                            </li>
-                        ))}
-                    </ul>
-                )}
+                <table className={styles.table}>
+                    <thead>
+                    <tr>
+                        <th>Imagem</th>
+                        <th>Nome</th>
+                        <th>Safra</th>
+                        <th>Vinicula</th>
+                        <th>Uva</th>
+                        <th>Valor Custo</th>
+                        <th>País</th>
+                        <th>Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {vinhos.filter(vinho => vinho.nome.toLowerCase().includes(filtro.toLowerCase())).map((vinho) => (
+                        <tr key={vinho.id}>
+                            <td><img src={vinho.imagem} alt={vinho.nome} className={styles.image} /></td>
+                            <td>{vinho.nome}</td>
+                            <td>{vinho.safra}</td>
+                            <td>{vinho.vinicula}</td>
+                            <td>{vinho.uva}</td>
+                            <td>{vinho.valor_custo}</td>
+                            <td>{vinho.pais}</td>
+                            <td>
+                                <button onClick={() => handleEdit(vinho)} className={styles.actionButton}>
+                                    <Image src={EditImage} alt="Editar" />
+                                </button>
+                                <button onClick={() => handleDelete(vinho.id)} className={styles.actionButton}>
+                                    <Image src={DeleteImage} alt="Deletar" />
+                                </button>
+                            </td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
             </div>
             <Modal isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)}>
                 <WineForm

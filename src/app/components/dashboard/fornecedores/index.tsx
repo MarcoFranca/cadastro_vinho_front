@@ -1,14 +1,15 @@
-// src/app/components/fornecedores/Fornecedores.tsx
 'use client';
 
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchFornecedores, createFornecedor } from '@/store/slices/fornecedorSlice';
+import { fetchFornecedores, createFornecedor, updateFornecedor, deleteFornecedor } from '@/store/slices/fornecedorSlice';
 import { RootState, AppDispatch } from '@/store/store';
 import Modal from '@/app/components/Modal/Modal';
 import styles from './Fornecedores.module.css';
 import Image from 'next/image';
-import PlusImage from '../../../../../public/assets/icones/add-button_1224.svg'
+import PlusImage from '../../../../../public/assets/icones/add-button_1224.svg';
+import EditImage from '../../../../../public/assets/icones/edit.svg';
+import DeleteImage from '../../../../../public/assets/icones/delete.svg';
 import Link from 'next/link';
 
 const Fornecedores = () => {
@@ -23,6 +24,8 @@ const Fornecedores = () => {
         endereco: '',
     });
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isEditMode, setIsEditMode] = useState(false);
+    const [currentFornecedorId, setCurrentFornecedorId] = useState<string | null>(null);
 
     useEffect(() => {
         if (fornecedorStatus === 'idle') {
@@ -37,7 +40,33 @@ const Fornecedores = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        dispatch(createFornecedor(novoFornecedor));
+        if (isEditMode && currentFornecedorId) {
+            dispatch(updateFornecedor({ id: currentFornecedorId, ...novoFornecedor }));
+        } else {
+            dispatch(createFornecedor(novoFornecedor));
+        }
+        resetForm();
+        setIsModalOpen(false);
+    };
+
+    const handleEdit = (fornecedor: any) => {
+        setNovoFornecedor(fornecedor);
+        setCurrentFornecedorId(fornecedor.id);
+        setIsEditMode(true);
+        setIsModalOpen(true);
+    };
+
+    const handleDelete = (id: string) => {
+        dispatch(deleteFornecedor(id));
+    };
+
+    const openModal = () => {
+        setIsEditMode(false);
+        setIsModalOpen(true);
+    };
+    const closeModal = () => setIsModalOpen(false);
+
+    const resetForm = () => {
         setNovoFornecedor({
             nome: '',
             contato: '',
@@ -45,19 +74,18 @@ const Fornecedores = () => {
             email: '',
             endereco: '',
         });
-        setIsModalOpen(false); // Fechar modal após a submissão
+        setCurrentFornecedorId(null);
+        setIsEditMode(false);
     };
-
-    const openModal = () => setIsModalOpen(true);
-    const closeModal = () => setIsModalOpen(false);
 
     return (
         <div className={styles.container}>
             <div className={styles.card}>
-                {/*<h2>Fornecedores</h2>*/}
-                <button className={styles.addButton} onClick={openModal}> <Image src={PlusImage} alt={'+'}/> Cadastrar Fornecedor</button>
+                <button className={styles.addButton} onClick={openModal}>
+                    <Image src={PlusImage} alt={'+'}/> Cadastrar Fornecedor
+                </button>
                 <Modal isOpen={isModalOpen} onRequestClose={closeModal}>
-                    <h2>Cadastrar Novo Fornecedor</h2>
+                    <h2>{isEditMode ? 'Editar Fornecedor' : 'Cadastrar Novo Fornecedor'}</h2>
                     <form onSubmit={handleSubmit} className={styles.form}>
                         <input
                             type="text"
@@ -104,35 +132,48 @@ const Fornecedores = () => {
                             className={styles.input}
                             required
                         />
-                        <button type="submit" className={styles.button}>Adicionar Fornecedor</button>
+                        <button type="submit" className={styles.button}>{isEditMode ? 'Atualizar Fornecedor' : 'Adicionar Fornecedor'}</button>
                     </form>
                 </Modal>
-                <ul className={styles.fornecedorList}>
+                <table className={styles.table}>
+                    <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Contato</th>
+                        <th>Telefone</th>
+                        <th>Email</th>
+                        <th>Endereço</th>
+                        <th>Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody>
                     {fornecedores.map((fornecedor) => (
-                        <li key={fornecedor.id}>
-                            <div>
-                                <div className={styles.empresa}>
-                                    <h3>Empresa:</h3>
-                                    <p>{fornecedor.nome}</p>
-                                </div>
-                                <div className={styles.empresa}>
-                                    <h3>Contato:</h3>
-                                    <p>{fornecedor.contato}</p>
-                                </div>
-                            </div>
-                            <div>
-                            <div className={styles.empresa}>
-                                <h3>Telefone:</h3>
-                                <Link href={`https://wa.me/${fornecedor.telefone}`} ><p>{fornecedor.telefone}</p></Link>
-                            </div>
-                            <div className={styles.empresa}>
-                                <h3>E-mail</h3>
-                                <Link href={`mailto:${fornecedor.email}`}><p>{fornecedor.email}</p></Link>
-                            </div>
-                            </div>
-                        </li>
+                        <tr key={fornecedor.id}>
+                            <td>{fornecedor.nome}</td>
+                            <td>{fornecedor.contato}</td>
+                            <td>
+                                <Link href={`https://wa.me/${fornecedor.telefone}`} passHref>
+                                    {fornecedor.telefone}
+                                </Link>
+                            </td>
+                            <td>
+                                <Link href={`mailto:${fornecedor.email}`} passHref>
+                                    {fornecedor.email}
+                                </Link>
+                            </td>
+                            <td>{fornecedor.endereco}</td>
+                            <td>
+                                <button onClick={() => handleEdit(fornecedor)} className={styles.actionButton}>
+                                    <Image src={EditImage} alt="Editar" />
+                                </button>
+                                <button onClick={() => handleDelete(fornecedor.id)} className={styles.actionButton}>
+                                    <Image src={DeleteImage} alt="Deletar" />
+                                </button>
+                            </td>
+                        </tr>
                     ))}
-                </ul>
+                    </tbody>
+                </table>
             </div>
         </div>
     );

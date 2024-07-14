@@ -1,4 +1,3 @@
-// src/store/slices/fornecedorSlice.ts
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '@/app/api/axios';
 
@@ -37,6 +36,16 @@ export const createFornecedor = createAsyncThunk('fornecedores/createFornecedor'
     return response.data;
 });
 
+export const updateFornecedor = createAsyncThunk('fornecedores/updateFornecedor', async (fornecedor: Fornecedor) => {
+    const response = await axiosInstance.put(`suppliers/suppliers/${fornecedor.id}/`, fornecedor);
+    return response.data;
+});
+
+export const deleteFornecedor = createAsyncThunk('fornecedores/deleteFornecedor', async (id: number) => {
+    await axiosInstance.delete(`suppliers/suppliers/${id}/`);
+    return id;
+});
+
 const fornecedorSlice = createSlice({
     name: 'fornecedores',
     initialState,
@@ -56,6 +65,15 @@ const fornecedorSlice = createSlice({
             })
             .addCase(createFornecedor.fulfilled, (state, action) => {
                 state.fornecedores.push(action.payload);
+            })
+            .addCase(updateFornecedor.fulfilled, (state, action) => {
+                const index = state.fornecedores.findIndex(fornecedor => fornecedor.id === action.payload.id);
+                if (index !== -1) {
+                    state.fornecedores[index] = action.payload;
+                }
+            })
+            .addCase(deleteFornecedor.fulfilled, (state, action) => {
+                state.fornecedores = state.fornecedores.filter(fornecedor => fornecedor.id !== action.payload);
             });
     },
 });
