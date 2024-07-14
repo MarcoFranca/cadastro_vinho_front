@@ -11,10 +11,10 @@ import React from 'react';
 import Link from "next/link";
 
 const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: HomeImage },
-    { id: 'fornecedores', label: 'Fornecedores', icon: FornecedorImage },
-    { id: 'vinhos', label: 'Vinhos', icon: WineImage },
-    { id: 'markup', label: 'Regra de Markup', icon: MarkupImage },
+    { id: 'dashboard', label: 'Dashboard', icon: HomeImage, href: '/dashboard' },
+    { id: 'fornecedores', label: 'Fornecedores', icon: FornecedorImage, href: '/dashboard/fornecedores' },
+    { id: 'vinhos', label: 'Vinhos', icon: WineImage, href: '/dashboard/vinhos' },
+    { id: 'markup', label: 'Regra de Markup', icon: MarkupImage, href: '/dashboard/markup' },
 ];
 
 const AsideHeader: React.FC = () => {
@@ -24,12 +24,10 @@ const AsideHeader: React.FC = () => {
                 <Image src={LogoImage} alt={'logo'} className={styles.logo} priority />
                 <ul className={styles.menu}>
                     {menuItems.map(menuItem => (
-                        <li key={menuItem.id}>
-                            <Link href={`/${menuItem.id}`}>
+                            <Link key={menuItem.id} href={`${menuItem.href}`}>
                                 <Image src={menuItem.icon} alt={menuItem.label} className={styles.icon}/>
                                 {menuItem.label}
                             </Link>
-                        </li>
                     ))}
                 </ul>
             </nav>

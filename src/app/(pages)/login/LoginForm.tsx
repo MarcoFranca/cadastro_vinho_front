@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { signIn, useSession } from 'next-auth/react';
 import styles from './login.module.css';
@@ -29,15 +29,13 @@ export default function LoginForm(props: any) {
             if (result?.error) {
                 setError(result.error);
             } else {
-                // Verifica a sessão após o login bem-sucedido
-                if (status === 'authenticated' && session) {
+                if (status === 'authenticated') {
                     const { user } = session;
                     if (user && user.accessToken && user.refreshToken) {
                         dispatch(login({
                             user: { id: user.id ?? '', username: user.username ?? '', email: user.email ?? '' },
                             token: { access: user.accessToken ?? '', refresh: user.refreshToken ?? '' },
                         }));
-                        // Redireciona para a página inicial ou protegida após o login bem-sucedido
                         window.location.href = '/dashboard';
                     } else {
                         setError('Failed to retrieve user session');
@@ -48,18 +46,6 @@ export default function LoginForm(props: any) {
             setError('Failed to login');
         }
     };
-
-    useEffect(() => {
-        if (status === 'authenticated' && session) {
-            const { user } = session;
-            if (user && user.accessToken && user.refreshToken) {
-                dispatch(login({
-                    user: { id: user.id ?? '', username: user.username ?? '', email: user.email ?? '' },
-                    token: { access: user.accessToken ?? '', refresh: user.refreshToken ?? '' },
-                }));
-            }
-        }
-    }, [session, status, dispatch]);
 
     return (
         <div className={styles.container_form}>

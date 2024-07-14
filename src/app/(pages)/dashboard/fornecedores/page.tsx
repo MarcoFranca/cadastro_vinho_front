@@ -6,6 +6,7 @@ import ClientLayout from '@/app/client-layout';
 import DashboardLayout from "@/app/components/dashboard/DashboardLayout";
 import CadastrarVinhos from "@/app/components/dashboard/cadastrar-vinhos";
 import styles from './dashboard.module.css';
+import Fornecedores from "@/app/components/dashboard/fornecedores";
 
 export default function DashboardPage() {
     const { data: session, status } = useSession();
@@ -27,7 +28,7 @@ export default function DashboardPage() {
     return (
         <ClientLayout>
             <DashboardLayout>
-                <h1>Dashboard</h1>
+                <Fornecedores/>
             </DashboardLayout>
         </ClientLayout>
     );

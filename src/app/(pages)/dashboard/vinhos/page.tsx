@@ -27,7 +27,7 @@ export default function DashboardPage() {
     return (
         <ClientLayout>
             <DashboardLayout>
-                <h1>Dashboard</h1>
+                <CadastrarVinhos/>
             </DashboardLayout>
         </ClientLayout>
     );

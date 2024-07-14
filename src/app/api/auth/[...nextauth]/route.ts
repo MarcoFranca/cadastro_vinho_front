@@ -22,7 +22,7 @@ const authOptions = {
                     if (tokenResponse.status === 200) {
                         const { access, refresh } = tokenResponse.data;
 
-                        const profileResponse = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}users/profile`, {
+                        const profileResponse = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}users/profile/`, {
                             headers: {
                                 Authorization: `Bearer ${access}`,
                             },
@@ -62,7 +62,7 @@ const authOptions = {
             }
             return token;
         },
-        async session({ session, token } : {session: any, token: any}) {
+        async session({ session, token } : {token: any, session:any}) {
             session.user = {
                 id: token.id,
                 name: token.name || token.username,
