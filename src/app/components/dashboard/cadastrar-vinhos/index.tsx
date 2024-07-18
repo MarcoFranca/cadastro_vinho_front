@@ -60,12 +60,7 @@ const CadastrarVinhos: React.FC = () => {
 
         try {
             if (isEditMode && currentVinhoId) {
-                await axiosInstance.put(`wines/wines/${currentVinhoId}/`, formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                });
-                dispatch(updateVinho({ id: currentVinhoId, ...formData }));
+                dispatch(updateVinho({ id: currentVinhoId, formData }));
             } else {
                 const response = await axiosInstance.post('wines/wines/', formData, {
                     headers: {

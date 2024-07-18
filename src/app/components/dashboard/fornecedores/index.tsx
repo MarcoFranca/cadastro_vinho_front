@@ -11,12 +11,13 @@ import PlusImage from '../../../../../public/assets/icones/add-button_1224.svg';
 import EditImage from '../../../../../public/assets/icones/edit.svg';
 import DeleteImage from '../../../../../public/assets/icones/delete.svg';
 import Link from 'next/link';
+import { Fornecedor } from '@/app/types/apiResponses'; // Certifique-se de importar a interface correta
 
 const Fornecedores = () => {
     const dispatch = useDispatch<AppDispatch>();
     const fornecedores = useSelector((state: RootState) => state.fornecedores.fornecedores);
     const fornecedorStatus = useSelector((state: RootState) => state.fornecedores.status);
-    const [novoFornecedor, setNovoFornecedor] = useState({
+    const [novoFornecedor, setNovoFornecedor] = useState<Omit<Fornecedor, 'id'>>({
         nome: '',
         contato: '',
         telefone: '',
@@ -25,7 +26,7 @@ const Fornecedores = () => {
     });
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
-    const [currentFornecedorId, setCurrentFornecedorId] = useState<string | null>(null);
+    const [currentFornecedorId, setCurrentFornecedorId] = useState<number | null>(null);
 
     useEffect(() => {
         if (fornecedorStatus === 'idle') {
@@ -40,7 +41,7 @@ const Fornecedores = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (isEditMode && currentFornecedorId) {
+        if (isEditMode && currentFornecedorId !== null) {
             dispatch(updateFornecedor({ id: currentFornecedorId, ...novoFornecedor }));
         } else {
             dispatch(createFornecedor(novoFornecedor));
@@ -49,14 +50,14 @@ const Fornecedores = () => {
         setIsModalOpen(false);
     };
 
-    const handleEdit = (fornecedor: any) => {
+    const handleEdit = (fornecedor: Fornecedor) => {
         setNovoFornecedor(fornecedor);
-        setCurrentFornecedorId(fornecedor.id);
+        setCurrentFornecedorId(fornecedor.id ?? 0);
         setIsEditMode(true);
         setIsModalOpen(true);
     };
 
-    const handleDelete = (id: string) => {
+    const handleDelete = (id: number) => {
         dispatch(deleteFornecedor(id));
     };
 

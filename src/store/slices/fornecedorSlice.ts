@@ -1,20 +1,10 @@
+// src/store/slices/fornecedorSlice.ts
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '@/app/api/axios';
+import {Fornecedor, FornecedorState} from "@/app/types/apiResponses";
 
-interface Fornecedor {
-    id?: number;
-    nome: string;
-    contato: string;
-    telefone: string;
-    email: string;
-    endereco: string;
-}
 
-interface FornecedorState {
-    fornecedores: Fornecedor[];
-    status: 'idle' | 'loading' | 'succeeded' | 'failed';
-    error: string | null;
-}
+
 
 const initialState: FornecedorState = {
     fornecedores: [],
@@ -27,12 +17,8 @@ export const fetchFornecedores = createAsyncThunk('fornecedores/fetchFornecedore
     return response.data;
 });
 
-export const createFornecedor = createAsyncThunk('fornecedores/createFornecedor', async (novoFornecedor: Fornecedor) => {
-    const response = await axiosInstance.post('suppliers/suppliers/', novoFornecedor, {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-        },
-    });
+export const createFornecedor = createAsyncThunk('fornecedores/createFornecedor', async (novoFornecedor: Omit<Fornecedor, 'id'>) => {
+    const response = await axiosInstance.post('suppliers/suppliers/', novoFornecedor);
     return response.data;
 });
 

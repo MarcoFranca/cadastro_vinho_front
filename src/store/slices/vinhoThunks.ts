@@ -29,3 +29,31 @@ export const fetchFornecedores = createAsyncThunk<void, void, { state: RootState
         }
     }
 );
+
+export const updateVinho = createAsyncThunk<void, { id: string; formData: FormData }, { state: RootState }>(
+    'vinhos/updateVinho',
+    async ({ id, formData }, { dispatch }) => {
+        try {
+            const response = await axiosInstance.put(`wines/wines/${id}/`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            dispatch(fetchVinhos());
+        } catch (error) {
+            console.error('Erro ao atualizar vinho:', error);
+        }
+    }
+);
+
+export const deleteVinho = createAsyncThunk<void, string, { state: RootState }>(
+    'vinhos/deleteVinho',
+    async (id, { dispatch }) => {
+        try {
+            await axiosInstance.delete(`wines/wines/${id}/`);
+            dispatch(fetchVinhos());
+        } catch (error) {
+            console.error('Erro ao deletar vinho:', error);
+        }
+    }
+);

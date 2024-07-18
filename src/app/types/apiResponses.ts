@@ -20,11 +20,23 @@ export interface AsideHeaderProps {
     currentSection: string;
 }
 
+//fornecedor
+
 export interface Fornecedor {
-    id: string;
+    id: number;
     nome: string;
-    // Adicione outros campos relevantes aqui
+    contato: string;
+    telefone: string;
+    email: string;
+    endereco: string;
 }
+
+export interface FornecedorState {
+    fornecedores: Fornecedor[];
+    status: 'idle' | 'loading' | 'succeeded' | 'failed';
+    error: string | null;
+}
+
 
 export interface Vinho {
     id: string;
@@ -34,12 +46,11 @@ export interface Vinho {
     uva: string;
     safra: string;
     tamanho: string;
-    valorCusto: number;
+    valor_custo: number; // Assegure-se de que esta propriedade está definida corretamente
     markup: number;
     estoque: number;
-    imagem: string;
-    fornecedores: string[]; // Assumindo que isso é um array de IDs de fornecedores
-    // Adicione outros campos relevantes aqui
+    fornecedores: string[];
+    imagem?: string;
 }
 
 export interface WineFormProps {
