@@ -87,7 +87,7 @@ const WineForm: React.FC<WineFormProps> = ({
                     placeholder="Markup"
                     value={markup}
                     onChange={(e) => setMarkup(e.target.value)}
-                    required
+
                 />
                 <input
                     type="number"
@@ -107,7 +107,7 @@ const WineForm: React.FC<WineFormProps> = ({
                     type="file"
                     accept="image/*"
                     onChange={handleImageChange}
-                    required
+
                 />
                 <button type="submit">Cadastrar</button>
             </form>
