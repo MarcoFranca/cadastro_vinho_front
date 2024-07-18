@@ -33,7 +33,7 @@ const WineList: React.FC<WineListProps> = ({ vinhos, filtro, setFiltro, onCadast
                             <p>Safra: {vinho.safra}</p>
                             <p>Vinicula: {vinho.vinicula}</p>
                             <p>Uva: {vinho.uva}</p>
-                            <p>Valor: {vinho.valorCusto}</p>
+                            <p>Valor: {vinho.valor_custo}</p>
                             <p>Pais: {vinho.pais}</p>
                         </li>
                     ))
